@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b5fff" />
+  <title>s137B Onsite Checklist</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <style>
+    :root{
+      --bg:#0b1220; --card:#111b2e; --muted:#93a4c7; --text:#e7eeff;
+      --accent:#0b5fff; --danger:#ff3b30; --ok:#34c759; --warn:#ffcc00;
+      --border: rgba(255,255,255,.10);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
+      background: linear-gradient(180deg,#091022 0%, #060a14 60%, #050813 100%);
+      color:var(--text);
+      padding: env(safe-area-inset-top) 14px env(safe-area-inset-bottom) 14px;
+    }
+    header{
+      position:sticky; top:0; z-index:50;
+      padding: env(safe-area-inset-top) 0 10px 0;
+      background: linear-gradient(180deg, rgba(9,16,34,.98) 0%, rgba(9,16,34,.75) 60%, rgba(9,16,34,0) 100%);
+      backdrop-filter: blur(10px);
+    }
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    h1{font-size:20px; margin:0 0 10px 0; letter-spacing:.2px;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border:1px solid var(--border); border-radius:999px;
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size:13px;
+    }
+    .pill strong{color: var(--text); font-weight:600;}
+    .btn{
+      appearance:none; border:none; border-radius:14px;
+      padding:12px 14px;
+      font-size:15px; font-weight:700;
+      color:#fff; background: rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px;
+      min-height:44px;
+    }
+    .btn.primary{background: var(--accent); border-color: rgba(11,95,255,.35);}
+    .btn.danger{background: rgba(255,59,48,.16); border-color: rgba(255,59,48,.35); color:#ffd8d5;}
+    .btn.ok{background: rgba(52,199,89,.18); border-color: rgba(52,199,89,.35); color:#d9ffe4;}
+    .btn:active{transform: translateY(1px);}
+    .grid{
+      display:grid; grid-template-columns: 1fr; gap: 12px;
+      margin-bottom: 150px;
+    }
+    @media (min-width: 920px){
+      .grid{grid-template-columns: 1fr 1fr;}
+    }
+    .card{
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding:14px;
+      box-shadow: var(--shadow);
+    }
+    .card h2{
+      margin:0 0 10px 0;
+      font-size:17px;
+    }
+    .card .sub{color: var(--muted); font-size:13px; margin:-6px 0 10px 0;}
+    label{display:block; font-size:13px; color: var(--muted); margin:10px 0 6px;}
+    input[type="text"], input[type="date"], input[type="time"], textarea, select{
+      width:100%;
+      font-size:16px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{min-height:80px; resize:vertical;}
+    .two{display:grid; grid-template-columns: 1fr 1fr; gap:10px;}
+    .three{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;}
+    .q{
+      border:1px solid var(--border);
+      border-radius: 16px;
+      padding:12px;
+      background: rgba(0,0,0,.18);
+      margin:10px 0;
+    }
+    .q .qtitle{font-size:15px; font-weight:750; margin:0 0 10px 0;}
+    .seg{display:flex; gap:8px; flex-wrap:wrap;}
+    .seg button{
+      flex:1 1 auto; min-width: 92px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      font-size:14px;
+      font-weight:800;
+    }
+    .seg button[data-v="yes"].active{background: rgba(52,199,89,.18); border-color: rgba(52,199,89,.45);}
+    .seg button[data-v="no"].active{background: rgba(255,59,48,.18); border-color: rgba(255,59,48,.45);}
+    .seg button[data-v="na"].active{background: rgba(255,204,0,.18); border-color: rgba(255,204,0,.45);}
+    .muted{color: var(--muted); font-size:13px;}
+    .footerbar{
+      position:fixed; left:0; right:0; bottom:0;
+      padding: 10px 14px calc(env(safe-area-inset-bottom) + 10px) 14px;
+      background: rgba(9,16,34,.92);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+    .footerbar .row{justify-content:space-between;}
+    .tiny{font-size:12px; color: var(--muted);}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      font-size:12px;
+      color: var(--muted);
+    }
+    .locked{
+      pointer-events:none;
+      opacity:.65;
+      filter: saturate(.9);
+    }
+    .thumbs{display:grid; grid-template-columns: repeat(2, 1fr); gap:10px;}
+    @media (min-width: 520px){ .thumbs{grid-template-columns: repeat(3, 1fr);} }
+    .thumb{
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:hidden;
+      background: rgba(0,0,0,.22);
+    }
+    .thumb img{width:100%; height:120px; object-fit:cover; display:block;}
+    .thumb .tmeta{padding:10px;}
+    .thumb .tmeta b{display:block; font-size:13px;}
+    .thumb .tmeta small{color:var(--muted);}
+    .thumb .actions{display:flex; gap:8px; padding:10px; border-top:1px solid var(--border);}
+    .thumb .actions button{flex:1; min-height:40px; font-size:13px; font-weight:800; border-radius:12px;}
+
+    /* Print (PDF) */
+    @media print{
+      body{background:#fff; color:#000; padding:0;}
+      header, .footerbar, .btn, .pill, #photoControls{display:none !important;}
+      .grid{grid-template-columns: 1fr; margin:0; gap:10px;}
+      .card{box-shadow:none; background:#fff; border:1px solid #ddd;}
+      input, textarea, select{border:1px solid #ccc; color:#000; background:#fff;}
+      .q{background:#fff; border:1px solid #ddd;}
+      .muted, label, .sub{color:#333;}
+      .thumb img{height:180px;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="row" style="justify-content:space-between;">
+      <div>
+        <h1>s137B Owner-Builder Onsite Checklist</h1>
+        <div class="row">
+          <span class="pill">Autosave: <strong id="saveState">OK</strong></span>
+          <span class="pill">Job: <strong id="jobLabel">New</strong></span>
+          <span class="pill">Status: <strong id="lockState">Draft</strong></span>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn" id="btnNew" title="New job">New</button>
+        <button class="btn" id="btnExport" title="Export to share/save">Export</button>
+        <button class="btn primary" id="btnPdf" title="Print / Save as PDF">PDF</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid" id="app">
+
+    <section class="card">
+      <h2>1) Site & Inspection</h2>
+      <p class="sub">Confirm basics on arrival.</p>
+
+      <div class="two">
+        <div>
+          <label>Inspector</label>
+          <select data-k="inspection.inspector">
+            <option value="">— Select —</option>
+            <option>Darren Munnich</option>
+            <option>Craig Sharwood</option>
+          </select>
+        </div>
+        <div>
+          <label>Owner-builder present?</label>
+          <div class="seg" data-seg="inspection.ownerPresent">
+            <button type="button" data-v="yes">YES</button>
+            <button type="button" data-v="no">NO</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="two">
+        <div>
+          <label>Street No.</label>
+          <input type="text" data-k="site.streetNo" placeholder="e.g., 13">
+        </div>
+        <div>
+          <label>Street</label>
+          <input type="text" data-k="site.street" placeholder="e.g., Albert Road">
+        </div>
+      </div>
+
+      <div class="two">
+        <div>
+          <label>Suburb / Town</label>
+          <input type="text" data-k="site.suburb" placeholder="e.g., Beechworth">
+        </div>
+        <div>
+          <label>Lot / Plan</label>
+          <input type="text" data-k="site.lotplan" placeholder="e.g., Lot 1 TP230936">
+        </div>
+      </div>
+
+      <div class="three">
+        <div>
+          <label>Inspection date</label>
+          <input type="date" data-k="inspection.date">
+        </div>
+        <div>
+          <label>Arrival</label>
+          <input type="time" data-k="inspection.arrival">
+        </div>
+        <div>
+          <label>Departure</label>
+          <input type="time" data-k="inspection.departure">
+        </div>
+      </div>
+
+      <label>Weather</label>
+      <input type="text" data-k="inspection.weather" placeholder="e.g., 30°C, fine">
+
+      <label>Person(s) onsite</label>
+      <input type="text" data-k="inspection.people" placeholder="Name(s) of who you spoke with">
+    </section>
+
+    <section class="card">
+      <h2>2) Owner-Builder Details</h2>
+      <p class="sub">Confirm details match contract / VBA records.</p>
+      <div class="two">
+        <div>
+          <label>Owner-builder name</label>
+          <input type="text" data-k="ob.name" placeholder="Full name">
+        </div>
+        <div>
+          <label>Mobile</label>
+          <input type="text" data-k="ob.mobile" placeholder="04xx xxx xxx">
+        </div>
+      </div>
+      <label>Contact address</label>
+      <input type="text" data-k="ob.address" placeholder="Address">
+      <div class="q">
+        <div class="qtitle">Works undertaken by owner-builder only?</div>
+        <div class="seg" data-seg="ob.obOnly">
+          <button type="button" data-v="yes">YES</button>
+          <button type="button" data-v="no">NO</button>
+          <button type="button" data-v="na">N/A</button>
+        </div>
+        <label>Trades / others involved (if NO)</label>
+        <textarea data-k="ob.trades" placeholder="List trades, scope, dates if known"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3) Works Covered / Exclusions</h2>
+      <div class="q">
+        <div class="qtitle">Type of works inspected</div>
+        <label>Select</label>
+        <select data-k="works.type">
+          <option value="">— Select —</option>
+          <option>Dwelling</option>
+          <option>Alterations / additions</option>
+          <option>Other</option>
+        </select>
+        <label>If “Other”, describe</label>
+        <input type="text" data-k="works.otherDesc" placeholder="Describe">
+      </div>
+      <div class="q">
+        <div class="qtitle">Other structures on site (excluded from this report)</div>
+        <div class="seg" data-seg="works.otherStructures">
+          <button type="button" data-v="no">NO</button>
+          <button type="button" data-v="yes">YES</button>
+        </div>
+        <label>If YES, list excluded structures</label>
+        <textarea data-k="works.exclusions" placeholder="e.g., shed, carport, pergola"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4) Construction Details</h2>
+      <p class="sub">Observed materials / system. Note if “reported only”.</p>
+
+      <div class="two">
+        <div>
+          <label>Footings</label>
+          <input type="text" data-k="construction.footings" placeholder="e.g., concrete">
+        </div>
+        <div>
+          <label>Floor</label>
+          <input type="text" data-k="construction.floor" placeholder="e.g., timber">
+        </div>
+      </div>
+
+      <div class="two">
+        <div>
+          <label>Stumps present?</label>
+          <div class="seg" data-seg="construction.stumps">
+            <button type="button" data-v="yes">YES</button>
+            <button type="button" data-v="no">NO</button>
+          </div>
+        </div>
+        <div>
+          <label>Wall structure</label>
+          <input type="text" data-k="construction.wallStructure" placeholder="e.g., timber">
+        </div>
+      </div>
+
+      <div class="two">
+        <div>
+          <label>Wall cladding</label>
+          <input type="text" data-k="construction.cladding" placeholder="e.g., weatherboard">
+        </div>
+        <div>
+          <label>Roof frame</label>
+          <input type="text" data-k="construction.roofFrame" placeholder="e.g., timber">
+        </div>
+      </div>
+
+      <div class="two">
+        <div>
+          <label>Roof pitch</label>
+          <input type="text" data-k="construction.roofPitch" placeholder="e.g., 22.5°, N/A">
+        </div>
+        <div>
+          <label>Storeys</label>
+          <select data-k="construction.storeys">
+            <option value="">— Select —</option>
+            <option>One</option>
+            <option>Two</option>
+            <option>Three</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="two">
+        <div>
+          <label>Internal wall lining</label>
+          <input type="text" data-k="construction.wallLining" placeholder="e.g., plaster">
+        </div>
+        <div>
+          <label>Ceiling lining</label>
+          <input type="text" data-k="construction.ceiling" placeholder="e.g., plaster">
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>5) Site Details / Earthworks</h2>
+      <div class="two">
+        <div>
+          <label>Fall of land</label>
+          <select data-k="siteDetails.fall">
+            <option value="">— Select —</option>
+            <option>Generally flat</option>
+            <option>Moderate</option>
+            <option>Steep</option>
+          </select>
+        </div>
+        <div>
+          <label>Direction / orientation notes</label>
+          <input type="text" data-k="siteDetails.direction" placeholder="Optional">
+        </div>
+      </div>
+
+      <div class="three">
+        <div>
+          <label>Excavation extent</label>
+          <select data-k="siteDetails.excavation">
+            <option value="">— Select —</option>
+            <option>Nil</option>
+            <option>Minor</option>
+            <option>Moderate</option>
+            <option>Extensive</option>
+          </select>
+        </div>
+        <div>
+          <label>Fill material</label>
+          <select data-k="siteDetails.fill">
+            <option value="">— Select —</option>
+            <option>Nil</option>
+            <option>Present</option>
+          </select>
+        </div>
+        <div>
+          <label>Retaining walls</label>
+          <select data-k="siteDetails.retaining">
+            <option value="">— Select —</option>
+            <option>Nil</option>
+            <option>Present</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="two">
+        <div>
+          <label>Side of street</label>
+          <input type="text" data-k="siteDetails.sideOfStreet" placeholder="e.g., South">
+        </div>
+        <div>
+          <label>Door faces</label>
+          <input type="text" data-k="siteDetails.doorFaces" placeholder="e.g., North">
+        </div>
+      </div>
+
+      <label>Site observations (drainage, access, hazards)</label>
+      <textarea data-k="siteDetails.notes" placeholder="Free notes"></textarea>
+    </section>
+
+    <section class="card">
+      <h2>6) Access & Insulation</h2>
+      <div class="q">
+        <div class="qtitle">Any areas inaccessible at time of inspection?</div>
+        <div class="seg" data-seg="access.inaccessible">
+          <button type="button" data-v="no">NO</button>
+          <button type="button" data-v="yes">YES</button>
+        </div>
+        <label>If YES, list areas</label>
+        <textarea data-k="access.inaccessibleAreas" placeholder="e.g., footings, inside walls, ceiling, subfloor"></textarea>
+      </div>
+
+      <div class="q">
+        <div class="qtitle">Insulation installed (sighted)?</div>
+        <div class="seg" data-seg="access.insulationSighted">
+          <button type="button" data-v="yes">YES</button>
+          <button type="button" data-v="no">NO / Not sighted</button>
+        </div>
+        <label>Type / location notes</label>
+        <textarea data-k="access.insulationNotes" placeholder="Where, what type, any evidence/labels"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>7) Documents Sighted</h2>
+      <p class="sub">Tick what you actually saw (or note “not sighted”).</p>
+      <div class="q">
+        <div class="qtitle">Building Permit sighted?</div>
+        <div class="seg" data-seg="docs.buildingPermit">
+          <button type="button" data-v="yes">YES</button>
+          <button type="button" data-v="no">NO</button>
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="qtitle">Certificate of Final Inspection sighted?</div>
+        <div class="seg" data-seg="docs.cfi">
+          <button type="button" data-v="yes">YES</button>
+          <button type="button" data-v="no">NO</button>
+        </div>
+        <label>CFI date (if known)</label>
+        <input type="date" data-k="docs.cfiDate">
+      </div>
+
+      <div class="two">
+        <div class="q">
+          <div class="qtitle">Electrical certificate sighted?</div>
+          <div class="seg" data-seg="docs.electrical">
+            <button type="button" data-v="yes">YES</button>
+            <button type="button" data-v="no">NO</button>
+            <button type="button" data-v="na">N/A</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qtitle">Waterproofing certificate sighted?</div>
+          <div class="seg" data-seg="docs.waterproofing">
+            <button type="button" data-v="yes">YES</button>
+            <button type="button" data-v="no">NO</button>
+            <button type="button" data-v="na">N/A</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="qtitle">Working drawings / plans sighted?</div>
+        <div class="seg" data-seg="docs.plans">
+          <button type="button" data-v="yes">YES</button>
+          <button type="button" data-v="no">NO</button>
+        </div>
+        <label>Prepared by / drawing numbers / sheets</label>
+        <textarea data-k="docs.plansNotes" placeholder="Prepared by, drawing no’s, date, sheets, comments"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>8) Second-hand / Used Materials</h2>
+      <div class="q">
+        <div class="qtitle">Any second-hand or used materials?</div>
+        <div class="seg" data-seg="materials.used">
+          <button type="button" data-v="no">NO</button>
+          <button type="button" data-v="yes">YES</button>
+        </div>
+        <div class="two">
+          <div>
+            <label>Source</label>
+            <select data-k="materials.source">
+              <option value="">— Select —</option>
+              <option>Advised by owner-builder</option>
+              <option>Observed onsite</option>
+              <option>Both</option>
+            </select>
+          </div>
+          <div>
+            <label>Location(s)</label>
+            <input type="text" data-k="materials.locations" placeholder="Where used">
+          </div>
+        </div>
+        <label>Details</label>
+        <textarea data-k="materials.details" placeholder="Describe items, condition, any concerns"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>9) Defects</h2>
+      <div class="q">
+        <div class="qtitle">Any defects identified?</div>
+        <div class="seg" data-seg="defects.any">
+          <button type="button" data-v="no">NO (Nil)</button>
+          <button type="button" data-v="yes">YES</button>
+        </div>
+        <label>List defects (minor/major, location, description)</label>
+        <textarea data-k="defects.list" placeholder="• Minor: ...\n• Major: ..."></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>10) Incomplete Works</h2>
+      <div class="q">
+        <div class="qtitle">Any incomplete works?</div>
+        <div class="seg" data-seg="incomplete.any">
+          <button type="button" data-v="no">NO (Nil)</button>
+          <button type="button" data-v="yes">YES</button>
+        </div>
+        <label>Status / condition</label>
+        <textarea data-k="incomplete.details" placeholder="Describe what’s incomplete and condition"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>11) Balcony / Deck (if applicable)</h2>
+      <div class="q">
+        <div class="qtitle">Upper level balcony/deck present?</div>
+        <div class="seg" data-seg="balcony.present">
+          <button type="button" data-v="no">NO (Nil)</button>
+          <button type="button" data-v="yes">YES</button>
+        </div>
+      </div>
+
+      <div class="q"><div class="qtitle">1) Flashing between deck and door/wall?</div>
+        <div class="seg" data-seg="balcony.flashing">
+          <button type="button" data-v="yes">YES</button><button type="button" data-v="no">NO</button><button type="button" data-v="na">N/A</button>
+        </div>
+      </div>
+      <div class="q"><div class="qtitle">2) Drilling through membrane for balustrade avoided?</div>
+        <div class="seg" data-seg="balcony.noPenetrations">
+          <button type="button" data-v="yes">YES</button><button type="button" data-v="no">NO</button><button type="button" data-v="na">N/A</button>
+        </div>
+      </div>
+      <div class="q"><div class="qtitle">3) Fall provided?</div>
+        <div class="seg" data-seg="balcony.fall">
+          <button type="button" data-v="yes">YES</button><button type="button" data-v="no">NO</button><button type="button" data-v="na">N/A</button>
+        </div>
+      </div>
+      <div class="q"><div class="qtitle">4) Drip tray?</div>
+        <div class="seg" data-seg="balcony.dripTray">
+          <button type="button" data-v="yes">YES</button><button type="button" data-v="no">NO</button><button type="button" data-v="na">N/A</button>
+        </div>
+      </div>
+      <div class="q"><div class="qtitle">5) Waterproofing certificate from licenced installer?</div>
+        <div class="seg" data-seg="balcony.wpCert">
+          <button type="button" data-v="yes">YES</button><button type="button" data-v="no">NO</button><button type="button" data-v="na">N/A</button>
+        </div>
+      </div>
+
+      <label>Balcony/deck notes (details if any “NO”)</label>
+      <textarea data-k="balcony.notes" placeholder="Explain any 'NO' items and observations"></textarea>
+    </section>
+
+    <section class="card">
+      <h2>12) Termite Protection</h2>
+      <div class="q">
+        <div class="qtitle">Property located in designated termite zone?</div>
+        <div class="seg" data-seg="termite.zone">
+          <button type="button" data-v="yes">YES</button><button type="button" data-v="no">NO</button><button type="button" data-v="na">Unsure</button>
+        </div>
+      </div>
+      <div class="q">
+        <div class="qtitle">Termite protection installed?</div>
+        <div class="seg" data-seg="termite.installed">
+          <button type="button" data-v="yes">YES</button><button type="button" data-v="no">NO</button><button type="button" data-v="na">N/A</button>
+        </div>
+        <label>Type of protection</label>
+        <input type="text" data-k="termite.type" placeholder="e.g., ant caps / metal / chemical / other">
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>13) Services Connected</h2>
+      <div class="two">
+        <div><label>Water</label><input type="text" data-k="services.water" placeholder="e.g., mains / tank"></div>
+        <div><label>Sewerage</label><input type="text" data-k="services.sewerage" placeholder="e.g., mains / septic"></div>
+      </div>
+      <div class="two">
+        <div><label>Storm discharge</label><input type="text" data-k="services.storm" placeholder="e.g., LPD"></div>
+        <div><label>Electric supply</label><input type="text" data-k="services.electric" placeholder="e.g., mains"></div>
+      </div>
+      <div class="two">
+        <div><label>Gas supply</label><input type="text" data-k="services.gas" placeholder="e.g., bottle / mains / N/A"></div>
+        <div><label>Other notes</label><input type="text" data-k="services.notes" placeholder="Optional"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>14) Photos</h2>
+      <p class="sub">Take evidence photos and label them (e.g., “Subfloor”, “Deck flashing”).</p>
+
+      <div id="photoControls" class="q">
+        <div class="qtitle">Add photo</div>
+        <label>Photo label</label>
+        <input type="text" id="photoLabel" placeholder="e.g., Front elevation">
+        <div class="row" style="margin-top:10px;">
+          <input id="photoFile" type="file" accept="image/*" capture="environment" style="flex:1; padding:10px; border-radius:14px; border:1px solid var(--border); background: rgba(0,0,0,.25); color:var(--muted);" />
+          <button class="btn ok" id="btnAddPhoto" type="button">Add</button>
+        </div>
+        <p class="muted" style="margin:10px 0 0 0;">Tip: keep photos to the key items (3–8 photos) to keep file sizes manageable.</p>
+      </div>
+
+      <div class="thumbs" id="photoGrid"></div>
+      <p class="muted">Photos are stored in the job file. Use <b>Export</b> to save/share to Dropbox.</p>
+    </section>
+
+    <section class="card">
+      <h2>15) Final Notes</h2>
+      <label>General workmanship comments</label>
+      <textarea data-k="final.workmanship" placeholder="Overall condition, workmanship, limitations"></textarea>
+
+      <label>Owner-builder statements</label>
+      <textarea data-k="final.statements" placeholder="What they told you (materials, dates, trades, etc.)"></textarea>
+
+      <label>Limitations / access issues</label>
+      <textarea data-k="final.limitations" placeholder="Anything not sighted or inaccessible, reasons"></textarea>
+
+      <div class="q">
+        <div class="qtitle">Mark inspection as FINAL (locks editing)</div>
+        <div class="seg" data-seg="meta.isFinal">
+          <button type="button" data-v="no">Draft</button>
+          <button type="button" data-v="yes">FINAL</button>
+        </div>
+        <p class="muted">If you set FINAL, fields are locked. Switch back to Draft to edit.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="footerbar">
+    <div class="row">
+      <div class="row">
+        <span class="badge">Offline-ready</span>
+        <span class="badge" id="lastSaved">Not saved yet</span>
+      </div>
+      <div class="row">
+        <button class="btn" id="btnImport">Import</button>
+        <button class="btn danger" id="btnClear">Clear</button>
+      </div>
+    </div>
+    <div class="tiny" style="margin-top:8px;">
+      Export creates a single <b>.json</b> file (includes photos) — save/share it to the shared Dropbox folder.
+    </div>
+  </div>
+
+<script>
+(function(){
+  const $ = (sel, root=document)=>root.querySelector(sel);
+  const $$ = (sel, root=document)=>Array.from(root.querySelectorAll(sel));
+  const STORAGE_KEY = "s137b_checklist_v2";
+  const stateEl = $("#saveState");
+  const lastSavedEl = $("#lastSaved");
+  const jobLabelEl = $("#jobLabel");
+  const lockStateEl = $("#lockState");
+  const appRoot = $("#app");
+
+  const defaultData = {
+    meta: { version: 2, createdAt: new Date().toISOString(), updatedAt: null, jobId: null, isFinal: "no" },
+    site: { streetNo:"", street:"", suburb:"", lotplan:"" },
+    inspection: { inspector:"", date:"", arrival:"", departure:"", weather:"", ownerPresent:"", people:"" },
+    ob: { name:"", mobile:"", address:"", obOnly:"", trades:"" },
+    works: { type:"", otherDesc:"", otherStructures:"", exclusions:"" },
+    construction: { footings:"", floor:"", stumps:"", wallStructure:"", cladding:"", roofFrame:"", roofPitch:"", wallLining:"", ceiling:"", storeys:"" },
+    siteDetails: { fall:"", direction:"", excavation:"", fill:"", retaining:"", sideOfStreet:"", doorFaces:"", notes:"" },
+    access: { inaccessible:"", inaccessibleAreas:"", insulationSighted:"", insulationNotes:"" },
+    docs: { buildingPermit:"", cfi:"", cfiDate:"", electrical:"", waterproofing:"", plans:"", plansNotes:"" },
+    materials: { used:"", source:"", locations:"", details:"" },
+    defects: { any:"", list:"" },
+    incomplete: { any:"", details:"" },
+    balcony: { present:"", flashing:"", noPenetrations:"", fall:"", dripTray:"", wpCert:"", notes:"" },
+    termite: { zone:"", installed:"", type:"" },
+    services: { water:"", sewerage:"", storm:"", electric:"", gas:"", notes:"" },
+    photos: [], // {id,label,ts,dataUrl}
+    final: { workmanship:"", statements:"", limitations:"" }
+  };
+
+  function deepGet(obj, path){
+    return path.split('.').reduce((o,k)=> (o && k in o) ? o[k] : undefined, obj);
+  }
+  function deepSet(obj, path, value){
+    const parts = path.split('.');
+    let cur = obj;
+    for(let i=0;i<parts.length-1;i++){
+      const p = parts[i];
+      if(!(p in cur) || typeof cur[p] !== "object") cur[p] = {};
+      cur = cur[p];
+    }
+    cur[parts[parts.length-1]] = value;
+  }
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return structuredClone(defaultData);
+      const data = JSON.parse(raw);
+      return Object.assign(structuredClone(defaultData), data);
+    }catch(e){
+      console.warn(e);
+      return structuredClone(defaultData);
+    }
+  }
+
+  let data = load();
+
+  function computeJobLabel(){
+    const no = (data.site?.streetNo || "").trim();
+    const st = (data.site?.street || "").trim();
+    const su = (data.site?.suburb || "").trim();
+    const d = (data.inspection?.date || "").trim();
+    const insp = (data.inspection?.inspector || "").trim();
+    const parts = [];
+    if(no || st) parts.push(`${no} ${st}`.trim());
+    if(su) parts.push(su);
+    if(d) parts.push(d);
+    if(insp) parts.push(insp.split(" ")[0]); // first name
+    return parts.length ? parts.join(" • ") : "New";
+  }
+
+  function exportBaseName(){
+    const no = (data.site?.streetNo || "").trim();
+    const st = (data.site?.street || "").trim();
+    const su = (data.site?.suburb || "").trim();
+    const d = (data.inspection?.date || "").trim();
+    const insp = (data.inspection?.inspector || "").trim();
+    const raw = ["s137B", no, st, su, d, insp].filter(Boolean).join("_");
+    return raw.replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g,"");
+  }
+
+  function setLockUI(){
+    const isFinal = (data.meta?.isFinal || "no") === "yes";
+    lockStateEl.textContent = isFinal ? "FINAL" : "Draft";
+    if(isFinal){
+      appRoot.classList.add("locked");
+      // but allow footer buttons (outside appRoot) to work; appRoot locking is enough.
+    }else{
+      appRoot.classList.remove("locked");
+    }
+  }
+
+  function markSaved(){
+    stateEl.textContent = "OK";
+    const when = new Date();
+    lastSavedEl.textContent = "Saved " + when.toLocaleString();
+    jobLabelEl.textContent = computeJobLabel();
+    setLockUI();
+  }
+
+  let saveTimer = null;
+  function scheduleSave(){
+    stateEl.textContent = "Saving…";
+    if(saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(()=>{
+      data.meta.updatedAt = new Date().toISOString();
+      if(!data.meta.jobId) data.meta.jobId = crypto.randomUUID();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      markSaved();
+    }, 250);
+  }
+
+  function bindInputs(){
+    $$("input[data-k], textarea[data-k], select[data-k]").forEach(el=>{
+      const k = el.getAttribute("data-k");
+      const v = deepGet(data, k);
+      el.value = (v ?? "");
+      el.addEventListener("input", ()=>{
+        deepSet(data, k, el.value);
+        scheduleSave();
+      });
+      el.addEventListener("change", ()=>{
+        deepSet(data, k, el.value);
+        scheduleSave();
+      });
+    });
+
+    $$("[data-seg]").forEach(seg=>{
+      const key = seg.getAttribute("data-seg");
+      const cur = (deepGet(data, key) ?? "");
+      seg.querySelectorAll("button[data-v]").forEach(btn=>{
+        if(btn.getAttribute("data-v") === cur) btn.classList.add("active");
+        btn.addEventListener("click", ()=>{
+          seg.querySelectorAll("button[data-v]").forEach(b=>b.classList.remove("active"));
+          btn.classList.add("active");
+          deepSet(data, key, btn.getAttribute("data-v"));
+          scheduleSave();
+        });
+      });
+    });
+  }
+
+  function resetJob(){
+    data = structuredClone(defaultData);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    location.reload();
+  }
+  function clearAnswers(){
+    const meta = data.meta;
+    data = structuredClone(defaultData);
+    data.meta = Object.assign(meta, { isFinal: "no" });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    location.reload();
+  }
+
+  function downloadFile(filename, blob){
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 500);
+  }
+
+  async function shareOrDownload(filename, blob){
+    const file = new File([blob], filename, {type: blob.type || "application/octet-stream"});
+    if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
+      try{
+        await navigator.share({ files:[file], title: filename, text: "s137B inspection export" });
+        return;
+      }catch(e){
+        // fall back to download
+      }
+    }
+    downloadFile(filename, blob);
+  }
+
+  async function exportJson(){
+    const fn = exportBaseName() + ".json";
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+    await shareOrDownload(fn, blob);
+  }
+
+  async function importJson(){
+    const inp = document.createElement("input");
+    inp.type = "file";
+    inp.accept = "application/json,.json";
+    inp.addEventListener("change", async ()=>{
+      const file = inp.files && inp.files[0];
+      if(!file) return;
+      const text = await file.text();
+      try{
+        const obj = JSON.parse(text);
+        data = Object.assign(structuredClone(defaultData), obj);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        location.reload();
+      }catch(e){
+        alert("Could not import JSON (invalid file).");
+      }
+    });
+    inp.click();
+  }
+
+  function renderPhotos(){
+    const grid = $("#photoGrid");
+    grid.innerHTML = "";
+    const photos = data.photos || [];
+    if(!photos.length){
+      grid.innerHTML = '<p class="muted">No photos added yet.</p>';
+      return;
+    }
+    for(const p of photos){
+      const wrap = document.createElement("div");
+      wrap.className = "thumb";
+      wrap.innerHTML = `
+        <img src="${p.dataUrl}" alt="">
+        <div class="tmeta">
+          <b>${escapeHtml(p.label || "Photo")}</b>
+          <small>${new Date(p.ts).toLocaleString()}</small>
+        </div>
+        <div class="actions">
+          <button class="btn danger" type="button" data-del="${p.id}">Delete</button>
+        </div>
+      `;
+      grid.appendChild(wrap);
+    }
+    grid.querySelectorAll("button[data-del]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        if((data.meta?.isFinal || "no")==="yes"){
+          alert("This inspection is FINAL. Switch back to Draft to edit/delete photos.");
+          return;
+        }
+        const id = btn.getAttribute("data-del");
+        if(confirm("Delete this photo?")){
+          data.photos = (data.photos||[]).filter(x=>x.id!==id);
+          scheduleSave();
+          renderPhotos();
+        }
+      });
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  }
+
+  async function fileToDataUrl(file, maxWidth=1600, quality=0.82){
+    // downscale to keep storage reasonable
+    const img = await createImageBitmap(file);
+    const ratio = img.width > maxWidth ? (maxWidth / img.width) : 1;
+    const w = Math.round(img.width * ratio);
+    const h = Math.round(img.height * ratio);
+    const canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, w, h);
+    return canvas.toDataURL("image/jpeg", quality);
+  }
+
+  async function addPhoto(){
+    if((data.meta?.isFinal || "no")==="yes"){
+      alert("This inspection is FINAL. Switch back to Draft to add photos.");
+      return;
+    }
+    const label = ($("#photoLabel").value || "").trim();
+    const fileEl = $("#photoFile");
+    const file = fileEl.files && fileEl.files[0];
+    if(!file){ alert("Pick a photo first."); return; }
+    if(!label){ alert("Add a label first (e.g., Subfloor)."); return; }
+    $("#btnAddPhoto").textContent = "Adding…";
+    try{
+      const dataUrl = await fileToDataUrl(file);
+      data.photos = data.photos || [];
+      data.photos.push({ id: crypto.randomUUID(), label, ts: new Date().toISOString(), dataUrl });
+      $("#photoLabel").value = "";
+      fileEl.value = "";
+      scheduleSave();
+      renderPhotos();
+    }finally{
+      $("#btnAddPhoto").textContent = "Add";
+    }
+  }
+
+  // PDF: just print the current page (print CSS formats it)
+  function pdf(){
+    window.print();
+  }
+
+  // Buttons
+  $("#btnPdf").addEventListener("click", pdf);
+  $("#btnExport").addEventListener("click", exportJson);
+  $("#btnImport").addEventListener("click", importJson);
+  $("#btnClear").addEventListener("click", ()=>{
+    if(confirm("Clear answers for this job?")) clearAnswers();
+  });
+  $("#btnNew").addEventListener("click", ()=>{
+    if(confirm("Start a new job (clears current job)?")) resetJob();
+  });
+  $("#btnAddPhoto").addEventListener("click", addPhoto);
+
+  // init
+  bindInputs();
+  renderPhotos();
+  markSaved();
+
+  // Register Service Worker for offline
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  }
+})();
+</script>
+</body>
+</html>
