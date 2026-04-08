@@ -975,31 +975,81 @@
 
   // PDF: just print the current page (print CSS formats it)
   function pdf(){
-    window.print();
-  }
+  const w = window.open("", "_blank");
 
-  // Buttons
-  $("#btnPdf").addEventListener("click", pdf);
-  $("#btnExport").addEventListener("click", exportJson);
-  $("#btnImport").addEventListener("click", importJson);
-  $("#btnClear").addEventListener("click", ()=>{
-    if(confirm("Clear answers for this job?")) clearAnswers();
-  });
-  $("#btnNew").addEventListener("click", ()=>{
-    if(confirm("Start a new job (clears current job)?")) resetJob();
-  });
-  $("#btnAddPhoto").addEventListener("click", addPhoto);
+  const html = `
+  <html>
+  <head>
+    <title>s137B Report</title>
+    <style>
+      body { font-family: Arial; margin: 20px; color:#000; }
+      h1 { font-size: 22px; }
+      h2 { margin-top: 20px; border-bottom: 1px solid #ccc; }
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+      td, th { border: 1px solid #ccc; padding: 6px; vertical-align: top; }
+      th { width: 30%; background: #eee; text-align:left; }
+    </style>
+  </head>
+  <body>
 
-  // init
-  bindInputs();
-  renderPhotos();
-  markSaved();
+  <h1>s137B Owner-Builder Inspection</h1>
 
-  // Register Service Worker for offline
-  if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
-  }
-})();
-</script>
-</body>
-</html>
+  <h2>Site & Inspection</h2>
+  <table>
+    <tr><th>Inspector</th><td>${data.inspection?.inspector || ""}</td></tr>
+    <tr><th>Street No.</th><td>${data.site?.streetNo || ""}</td></tr>
+    <tr><th>Street</th><td>${data.site?.street || ""}</td></tr>
+    <tr><th>Suburb</th><td>${data.site?.suburb || ""}</td></tr>
+    <tr><th>Lot / Plan</th><td>${data.site?.lotplan || ""}</td></tr>
+    <tr><th>Date</th><td>${data.inspection?.date || ""}</td></tr>
+    <tr><th>Arrival</th><td>${data.inspection?.arrival || ""}</td></tr>
+    <tr><th>Departure</th><td>${data.inspection?.departure || ""}</td></tr>
+    <tr><th>Weather</th><td>${data.inspection?.weather || ""}</td></tr>
+    <tr><th>Owner-builder present</th><td>${data.inspection?.ownerPresent || ""}</td></tr>
+    <tr><th>People onsite</th><td>${data.inspection?.people || ""}</td></tr>
+  </table>
+
+  <h2>Owner Builder</h2>
+  <table>
+    <tr><th>Name</th><td>${data.ob?.name || ""}</td></tr>
+    <tr><th>Mobile</th><td>${data.ob?.mobile || ""}</td></tr>
+    <tr><th>Address</th><td>${data.ob?.address || ""}</td></tr>
+    <tr><th>Owner-builder only</th><td>${data.ob?.obOnly || ""}</td></tr>
+    <tr><th>Trades involved</th><td>${data.ob?.trades || ""}</td></tr>
+  </table>
+
+  <h2>Construction</h2>
+  <table>
+    <tr><th>Footings</th><td>${data.construction?.footings || ""}</td></tr>
+    <tr><th>Floor</th><td>${data.construction?.floor || ""}</td></tr>
+    <tr><th>Wall structure</th><td>${data.construction?.wallStructure || ""}</td></tr>
+    <tr><th>Wall cladding</th><td>${data.construction?.cladding || ""}</td></tr>
+    <tr><th>Roof frame</th><td>${data.construction?.roofFrame || ""}</td></tr>
+    <tr><th>Roof pitch</th><td>${data.construction?.roofPitch || ""}</td></tr>
+    <tr><th>Storeys</th><td>${data.construction?.storeys || ""}</td></tr>
+  </table>
+
+  <h2>Defects / Incomplete Works</h2>
+  <table>
+    <tr><th>Defects</th><td>${data.defects?.list || ""}</td></tr>
+    <tr><th>Incomplete works</th><td>${data.incomplete?.details || ""}</td></tr>
+  </table>
+
+  <h2>Final Notes</h2>
+  <table>
+    <tr><th>Workmanship</th><td>${data.final?.workmanship || ""}</td></tr>
+    <tr><th>Statements</th><td>${data.final?.statements || ""}</td></tr>
+    <tr><th>Limitations</th><td>${data.final?.limitations || ""}</td></tr>
+  </table>
+
+  <script>
+    window.onload = () => setTimeout(() => window.print(), 300);
+  <\/script>
+
+  </body>
+  </html>
+  `;
+
+  w.document.write(html);
+  w.document.close();
+}
